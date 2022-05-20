@@ -3,7 +3,10 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
+
+import { Image } from "react-native";
+
+import { AntDesign, SimpleLineIcons, MaterialIcons  } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,18 +15,26 @@ import { ColorSchemeName, Pressable } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
+import HomeScreen from '../screens/HomeScreen';
+import MarketScreen from '../screens/MarketScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import PortfolioScreen from '../screens/PortfolioScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import RankingScreen from '../screens/RankingScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+
+
+const home = require('../assets/images/home.png');
+const profile = require('../assets/images/profile.png');
+const ranking = require('../assets/images/ranking.png');
+const linegraph = require('../assets/images/line-graph.png');
+const portfolio = require('../assets/images/portfolios.png');
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      linking={LinkingConfiguration}>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -37,12 +48,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
+    <Stack.Navigator >
+      <Stack.Screen name="Root"  component={BottomTabNavigator} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
@@ -58,50 +65,63 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
+        tabBarStyle: {
+          backgroundColor: '#eeecfc',
+          borderTopColor: '#eeecfc',
+        }
+      }}
+      >
+
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: 'Home',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <AntDesign name="home" size={30} color="#302797" />,
+        }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
+        name="Portfolio"
+        component={PortfolioScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Portfolio',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <SimpleLineIcons name="bag" size={30} color="#302797" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Market"
+        component={MarketScreen}
+        options={{
+          title: 'Market',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <AntDesign  name="barschart" size={30} color="#302797" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Ranking"
+        component={RankingScreen}
+        options={{
+          title: 'Ranking',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <MaterialIcons  name="leaderboard" size={30}  color="#302797" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <AntDesign name="profile" size={30} color="#302797"/>,
         }}
       />
     </BottomTab.Navigator>
   );
 }
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}
+
